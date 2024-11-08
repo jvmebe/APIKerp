@@ -18,7 +18,6 @@ namespace APIKerp.Repositories
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                //colocar campos para IdPais e Pais ao invés de agregar a classe em GET
                 string query = @"SELECT c.IdCidade AS Id, c.Cidade, c.Ddd, c.Ativo, e.IdEstado, e.Estado
                  FROM Cidade c
                  JOIN Estado e ON c.IdEstado = e.IdEstado;";

@@ -17,13 +17,13 @@
         public string Complemento { get; set; }
         public string Bairro { get; set; }
         public string Cep { get; set; }
-        public string ConsumidorRevenda { get; set; }  // 'Y' or 'N'
+        public string ConsumidorRevenda { get; set; } 
         public string Observacao { get; set; }
-        public string RegimeSemSt { get; set; }        // 'Y' or 'N'
-        public string ProdutorRural { get; set; }      // 'Y' or 'N'
+        public string RegimeSemSt { get; set; }        
+        public string ProdutorRural { get; set; }      
         public DateTime DataUltimaCompra { get; set; }
-        public string Ativo { get; set; }              // 'Y' or 'N'
-        public string FisicaJuridica { get; set; }     // 'Y' or 'N'
+        public string Ativo { get; set; }              
+        public string FisicaJuridica { get; set; }     
         public string ListaNome { get; set; }
         public DateTime ListaDataModificacao { get; set; }
         public decimal MargemLucro { get; set; }
