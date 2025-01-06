@@ -2,6 +2,7 @@
 using Dapper;
 using System.Data.SqlClient;
 using System.Data;
+using System.Diagnostics;
 
 namespace APIKerp.Repositories
 {
@@ -54,6 +55,98 @@ namespace APIKerp.Repositories
 
             }
         }
+
+        public async Task<(bool Success, string ErrorMessage)> Update(int idEmpresa, int idEstado, Estados estado)
+        {
+            estado.DataModificacao = DateTime.Now;
+            try
+            {
+                using (var db = new SqlConnection(_connectionString))
+                {
+                    await db.OpenAsync();
+
+                    using (var transaction = db.BeginTransaction())
+                    {
+                        string query = @"
+                            UPDATE Cidade 
+                            SET 
+                                IdEstado = @IdEstado,
+                                Cidade = @Cidade,
+                                Ddd = @Ddd,
+                                Ativo = @Ativo,
+                                DataModificacao = @DataModificacao
+                            WHERE IdEmpresa = @IdEmpresa AND IdCidade = @IdCidade";
+
+                        var parameters = new
+                        {
+                            IdEmpresa = idEmpresa,
+                            IdEstado = idEstado,
+                            IdPais = estado.IdPais,
+                            Estado = estado.Estado,
+                            Sigla = estado.Sigla,
+                            PerIcms = estado.PercIcms,
+                            IcmsInt = estado.IcmsInt,
+                            DataModificacao = estado.DataModificacao,
+                            PerRedSt = estado.PerRedSt,
+                            CodigoWeb = estado.CodigoWeb
+                        };
+
+                        int affectedRows = await db.ExecuteAsync(query, parameters, transaction);
+
+                        if (affectedRows == 0)
+                        {
+                            transaction.Rollback();
+                            return (false, "País não encontrado");
+                        }
+
+                        transaction.Commit();
+                        return (true, null);
+                    }
+                }
+            }
+            //SQL Server normalmente retorna código 2628 ou 8152 quando os dados não passam validação por tamanho do campo
+            catch (SqlException ex) when (ex.Number == 2628 || ex.Number == 8152)
+            {
+                return (false, "Um ou mais campos excedem o tamnho limite.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return (false, $"Erro");
+            }
+        }
+
+
+        public async Task<(bool Success, string ErrorMessage)> Delete(int idEmpresa, int idPais)
+        {
+
+            try
+            {
+                using (IDbConnection db = new SqlConnection(_connectionString))
+                {
+                    string query = @"DELETE FROM Cidade WHERE IdEmpresa = @IdEmpresa AND IdCidade = @IdCidade";
+
+                    var affectedRows = await db.ExecuteAsync(query, new
+                    {
+                        IdEmpresa = idEmpresa,
+                        IdPais = idPais
+                    });
+
+                    return (affectedRows > 0, null);
+                }
+            }
+            catch (SqlException ex) when (ex.Number == 547)
+            {
+                return (false, "Não é possível excluir esta cidade: Existem cadastros vinculados.");
+            }
+            catch (Exception ex)
+            {
+                return (false, "Ocorreu um erro.");
+            }
+
+
+        }
+
 
     }
 }

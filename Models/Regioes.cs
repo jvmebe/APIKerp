@@ -1,6 +1,6 @@
 ﻿namespace APIKerp.Models
 {
-    public class Regioes
+    public class Regioes: Pai
     {
         public string Regiao { get; set; }
         public string Descricao { get; set; }

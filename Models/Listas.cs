@@ -7,5 +7,7 @@ namespace APIKerp.Models
         public double DescMax { get; set; }
         public double MargemLucro { get; set; }
         public double PerComissao { get; set; }
+        public string Todas {  get; set; }
+
     }
 }

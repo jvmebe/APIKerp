@@ -1,10 +1,11 @@
 ﻿namespace APIKerp.Models
 {
-    public class CondPags
+    public class CondPags : Pai
     {
         public string CondicaoPagamento { get; set; }
         public decimal TaxaJuros { get; set; }
         public int NumeroParcelas { get; set; }
+        public string Operacao { get; set; }
         public string Tipo {  get; set; }
         public string Dia {  get; set; }
         public string Ativo { get; set; }

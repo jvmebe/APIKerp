@@ -41,6 +41,52 @@ namespace APIKerp.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{idEmpresa:int}/{idCidade:int}")]
+        public async Task<IActionResult> Update(int idEmpresa, int idLista, [FromBody] Estados estado)
+        {
+            if (estado == null)
+            {
+                return BadRequest(new { Message = "Dados inválidos." });
+            }
+
+            var (success, errorMessage) = await _repository.Update(idEmpresa, idLista, estado);
+
+            if (!success)
+            {
+                if (errorMessage.Contains("campos"))
+                    return BadRequest(new { Message = errorMessage });
+
+                if (errorMessage == "encontrado.")
+                    return NotFound(new { Message = errorMessage });
+
+                return StatusCode(500, new { Message = errorMessage });
+            }
+
+            return Ok(new { Message = "Item atualizado." });
+        }
+
+
+
+        [HttpDelete("{idEmpresa:int}/{idCidade:int}")]
+        public async Task<IActionResult> Delete(int idEmpresa, int idCidade)
+        {
+            var (success, errorMessage) = await _repository.Delete(idEmpresa, idCidade);
+
+            if (!success)
+            {
+                if (errorMessage.Contains("encontrado"))
+                    return NotFound();
+
+                if (errorMessage.Contains("vinculada"))
+                    return Conflict(errorMessage);
+
+                return StatusCode(500, new { Message = errorMessage });
+
+            }
+
+            return NoContent();
+        }
+
 
     }
 }

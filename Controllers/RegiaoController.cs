@@ -6,26 +6,26 @@ namespace APIKerp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PaisController : Controller
+    public class RegiaoController : Controller
     {
-        private readonly PaisRepository _repository;
+        private readonly RegiaoRepository _repository;
 
-        public PaisController(PaisRepository repository)
+        public RegiaoController(RegiaoRepository repository)
         {
             _repository = repository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Paises>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Regioes>>> GetAll()
         {
             var result = await _repository.GetAll();
             return Ok(result);
         }
 
-        [HttpGet("{idEmpresa:int}/{idPais:int}")]
-        public async Task<ActionResult<Paises>> GetOne(int idEmpresa, int idPais)
+        [HttpGet("{idEmpresa:int}/{idRegiao:int}")]
+        public async Task<ActionResult<Fornecedor>> GetOne(int idEmpresa, int idRegiao)
         {
-            var result = await _repository.GetOne(idEmpresa, idPais);
+            var result = await _repository.GetOne(idEmpresa, idRegiao);
             if (result == null)
             {
                 return NotFound();
@@ -35,21 +35,21 @@ namespace APIKerp.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> Create([FromBody] Paises pais)
+        public async Task<ActionResult<int>> Create([FromBody] Regioes regiao)
         {
-            var result = await _repository.Create(pais);
+            var result = await _repository.Create(regiao);
             return Ok(result);
         }
 
-        [HttpPut("{idEmpresa:int}/{idPais:int}")]
-        public async Task<IActionResult> Update(int idEmpresa, int idPais, [FromBody] Paises pais)
+        [HttpPut("{idEmpresa:int}/{idRegiao:int}")]
+        public async Task<IActionResult> Update(int idEmpresa, int idRegiao, [FromBody] Regioes regiao)
         {
-            if (pais == null)
+            if (regiao == null)
             {
                 return BadRequest(new { Message = "Dados inválidos." });
             }
 
-            var (success, errorMessage) = await _repository.Update(idEmpresa, idPais, pais);
+            var (success, errorMessage) = await _repository.Update(idEmpresa, idRegiao, regiao);
 
             if (!success)
             {
@@ -65,12 +65,12 @@ namespace APIKerp.Controllers
             return Ok(new { Message = "Item atualizado." });
         }
 
-        [HttpDelete("{idEmpresa:int}/{idPais:int}")]
-        public async Task<IActionResult> Delete(int idEmpresa, int idPais)
+        [HttpDelete("{idEmpresa:int}/{idRegiao:int}")]
+        public async Task<IActionResult> Delete(int idEmpresa, int idRegiao)
         {
-            var (success, errorMessage) = await _repository.Delete(idEmpresa, idPais);
+            var (success, errorMessage) = await _repository.Delete(idEmpresa, idRegiao);
 
-            if (!success) 
+            if (!success)
             {
                 if (errorMessage.Contains("encontrado"))
                     return NotFound();
